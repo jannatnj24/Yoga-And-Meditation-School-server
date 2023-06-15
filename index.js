@@ -46,11 +46,19 @@ async function run() {
       res.send(classes);
     });
     app.get("/instructors", async (req, res) => {
-      const classes = await instructorCollection.find({}).toArray();
+      const classes = await instructorsCollection.find({}).toArray();
         
         
       res.send(classes);
     });
+
+    app.get("/class", async (req, res) => {
+      const Class = await classesCollection.find({}).limit(6).sort({availableSeats :-1}).toArray();
+       
+        
+      res.send(Class);
+    });
+    
     
     
 
