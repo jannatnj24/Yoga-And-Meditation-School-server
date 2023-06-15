@@ -58,7 +58,12 @@ async function run() {
         
       res.send(Class);
     });
-    
+    app.get("/instructor", async (req, res) => {
+      const c = await classesCollection.find({}).limit(6).toArray();
+       
+        
+      res.send(c);
+    });
     
     
 
