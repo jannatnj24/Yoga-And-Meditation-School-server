@@ -57,7 +57,11 @@ async function run() {
     const instructorsCollection = client.db("YogaSchool").collection("instructors");
 
 
-
+    app.post('/jwt', (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.SECRET_JWT_TOKEN, { expiresIn: '1h' })
+      res.send({ token })
+    })
 
     //  class  api
     app.get("/classes", async (req, res) => {
@@ -85,7 +89,22 @@ async function run() {
         
       res.send(Class);
     });
-    
+    // Add class
+            
+   app.post("/addClass", async (req, res) => {
+    const body = req.body;
+    const result = await classesCollection.insertOne(body);
+ 
+    res.send(result);
+     });
+
+     app.get("/myClass/:email", async (req, res) => {
+      const cls = await classesCollection
+        .find({
+          email: req.params.email,}).sort({price :1}).toArray();
+      res.send(cls);
+    });
+
     // set role
     app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
@@ -101,6 +120,32 @@ async function run() {
       res.send(result);
 
     })
+
+    app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+        return  res.send({ instructor: false })
+      }
+
+      const query = { email: email }
+      const user = await usersCollection.findOne(query);
+      const result = { instructor: user?.role === 'instructor' }
+        res.send(result);
+    })
+    app.get('/users/admin/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+       return res.send({ admin: false })
+      }
+
+      const query = { email: email }
+      const user = await usersCollection.findOne(query);
+      const result = { admin: user?.role === 'admin' }
+      res.send(result);
+    })
+
     app.patch('/users/instructor/:id', async (req, res) => {
       const id = req.params.id;
       console.log(id);
