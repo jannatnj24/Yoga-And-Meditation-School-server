@@ -59,13 +59,18 @@ async function run() {
       res.send(Class);
     });
     app.get("/instructor", async (req, res) => {
-      const c = await classesCollection.find({}).limit(6).toArray();
+      const Class = await instructorsCollection.find({}).limit(6).toArray();
        
         
-      res.send(c);
+      res.send(Class);
     });
     
     
+
+    app.get('/users',async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
 
     app.post('/users', async (req, res) => {
       const user = req.body;
