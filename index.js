@@ -63,6 +63,14 @@ async function run() {
       res.send({ token })
     })
 
+    //  cart api
+    //  app.post('/carts', async (req, res) => {
+    //   const Class = req.body;
+    //   const result = await cartsCollection.insertOne(Class);
+    //   res.send(result);
+    // })
+
+    
     //  class  api
     app.get("/classes", async (req, res) => {
       const classes = await classesCollection.find({}).sort({availableSeats :-1}).toArray();
@@ -104,6 +112,8 @@ async function run() {
           email: req.params.email,}).sort({price :1}).toArray();
       res.send(cls);
     });
+
+
 
     // set role
     app.patch('/users/admin/:id', async (req, res) => {
